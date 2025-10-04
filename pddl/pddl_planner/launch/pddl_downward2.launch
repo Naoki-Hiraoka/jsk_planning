@@ -1,0 +1,12 @@
+<launch>
+  <arg name="planner_option" default="--alias seq-sat-lama-2011" />
+  <node pkg="pddl_planner"
+        type="pddl.py"
+        name="pddl_planner"
+        output="screen">
+    <param name="pddl_planner"
+           value="downward2" />
+    <param name="pddl_search_option"
+           value="$(arg planner_option)" />
+  </node>
+</launch>

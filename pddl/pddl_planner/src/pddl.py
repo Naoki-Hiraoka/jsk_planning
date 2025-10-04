@@ -146,6 +146,7 @@ class PDDLPlannerActionServer(object):
             plan = f.read().split("\n")
 
         plan.remove("")
+        plan = [action for action in plan if not action.strip().startswith(";")]
         results = [re.sub(" \)$", ")", x)
                    for x in plan]
         rospy.loginfo(results)
@@ -248,6 +249,14 @@ class PDDLPlannerActionServer(object):
         elif self._planner_name == "downward":
             (fd, path_name) = tempfile.mkstemp(text=True, prefix='plan_')
             output = self.exec_process(["rosrun", "downward", "plan", domain, problem] + self._search_option + ["--plan-file", path_name],
+                                       max_planning_time)
+            rospy.loginfo(output)
+            self._result.data = output
+            return self.parse_pddl_result_downward(path_name)
+        # downward2
+        elif self._planner_name == "downward2":
+            (fd, path_name) = tempfile.mkstemp(text=True, prefix='plan_')
+            output = self.exec_process(["rosrun", "downward2", "fast-downward.py"] + self._search_option + ["--plan-file", path_name] + [domain, problem],
                                        max_planning_time)
             rospy.loginfo(output)
             self._result.data = output
